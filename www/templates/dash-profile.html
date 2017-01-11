@@ -1,0 +1,42 @@
+<style type="text/css">
+  .center{
+    text-align: center;
+  }
+</style>
+
+<ion-content scroll="false" class="center">
+
+
+  <div class="row">
+  <div class="col">
+  <div class="card">
+  <div class="item item-text-wrap">
+    <h1>{{username}}</h1>
+    <img ng-src="{{'https://api.adorable.io/avatars/285/'+username+'.png'}}">
+  </div>
+</div>
+  </div>
+  </div>
+  <div class="row">
+  <div class="col col-50">
+   <button class="button button-dark" ng-click="randomizeUsername()">Show me more</button>
+
+  </div>
+  <div class="col col-50">
+  <button class="button button-positive" ng-click="submitUsername()" >Perfect, Go ahead</button>
+  </div>
+  </div>
+    
+
+</ion-content>
+
+<!-- <ion-content>
+
+<button ng-click=connection.initialiseNewConnection(username)>Connect</button>
+<label class="item item-input">
+  <span class="input-label">Friend's name</span>
+  <input type="text" ng-model="peername">
+</label>
+<button ng-click=connection.connectToPeer(peername)>Play</button>
+<button ng-click=connection.sendMessage('Message')>Play</button>
+</ion-content> -->

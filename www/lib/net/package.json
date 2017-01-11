@@ -1,0 +1,11 @@
+{
+ "name": "net",
+ "version": "3.46.1",
+ "main": "net.min.js",
+ "description": "'net' nodejs core module browserify-ied with `--standalone net`. Should support all module systems (commonjs, AMD & `window.net`) - check browserify docs.",
+ "keywords": [
+  "nodejs",
+  "browserify",
+  "net"
+ ]
+}

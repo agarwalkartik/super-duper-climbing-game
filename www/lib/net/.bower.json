@@ -1,0 +1,22 @@
+{
+  "name": "net",
+  "version": "3.46.1",
+  "main": "net.min.js",
+  "description": "'net' nodejs core module browserify-ied with `--standalone net`. Should support all module systems (commonjs, AMD & `window.net`) - check browserify docs.",
+  "keywords": [
+    "nodejs",
+    "browserify",
+    "net"
+  ],
+  "homepage": "https://github.com/anodynos/node2web_net",
+  "_release": "3.46.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.46.1",
+    "commit": "380eb3395629e5197b645938514ada4750d4f370"
+  },
+  "_source": "https://github.com/anodynos/node2web_net.git",
+  "_target": "^3.46.1",
+  "_originalSource": "net",
+  "_direct": true
+}

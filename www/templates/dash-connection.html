@@ -1,0 +1,26 @@
+<style type="text/css">
+  .center{
+    text-align: center;
+  }
+</style>
+
+<ion-content scroll="false" class="center">
+
+ <ul class="list">
+    <li class="item" ng-repeat="user in users" ng-click="expression" ng-if="user.deviceId != uuid">
+{{user.username}} {{user.id}} <button ng-click="invite(user)">Invite</button>
+    </li>
+</ul>
+
+</ion-content>
+
+<!-- <ion-content>
+
+<button ng-click=connection.initialiseNewConnection(username)>Connect</button>
+<label class="item item-input">
+  <span class="input-label">Friend's name</span>
+  <input type="text" ng-model="peername">
+</label>
+<button ng-click=connection.connectToPeer(peername)>Play</button>
+<button ng-click=connection.sendMessage('Message')>Play</button>
+</ion-content> -->
