@@ -5,10 +5,15 @@
 </style>
 
 <ion-content scroll="false" class="center">
+My username: {{localStorageObject.username}}
+My status: {{localStorageObject.status}}
+
 
  <ul class="list">
     <li class="item" ng-repeat="user in users" ng-click="expression" ng-if="user.deviceId != uuid">
-{{user.username}} {{user.id}} <button ng-click="invite(user)">Invite</button>
+{{user.username}} {{user.id}} 
+<button class="button button-positive" ng-if="user.status === 'available'" ng-click="invite(user)">Invite</button>
+<button class="button button-assertive" ng-if="user.status === 'busy'" >Busy</button>
     </li>
 </ul>
 

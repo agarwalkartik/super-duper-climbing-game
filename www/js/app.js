@@ -4,20 +4,22 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'starter.services','starter.directives'])
+angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.directives'])
   .run(function($ionicPlatform, $rootScope, Connection, $ionicLoading, $state, $timeout) {
     $ionicPlatform.ready(function() {
-      
-      $ionicLoading.show({
-        hideOnStateChange: true
-      });
-      $rootScope.uuid = ionic.Platform.device().uuid + 1 || 'chrometest1';
+      // $ionicLoading.show({
+      //   hideOnStateChange: true
+      // });
+      $rootScope.uuid = ionic.Platform.device().uuid + 1 || 'chrometest';
+      Connection.setStatus('busy');
+      localStorage.uuid = $rootScope.uuid;
       Connection.newServerConnection().then(function() {
         if (!localStorage.username) {
           // $state.go('dashboard.profile');
         } else {
           Connection.saveUserOnFirebase().then(function() {
             // $state.go('dashboard.connection');
+            Connection.setStatus('available');
           });
         }
       });

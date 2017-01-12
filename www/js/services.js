@@ -1,5 +1,5 @@
 angular.module('starter.services', [])
-  .factory('Connection', function($rootScope, $ionicLoading, $http, $q, $ionicPlatform, $ionicPopup, $state) {
+  .factory('Connection', function($rootScope, $ionicLoading, $http, $q, $ionicPlatform, $ionicPopup, $state, $timeout) {
     var methods = {
       initialiseNewConnection: initialiseNewConnection,
       connectToPeer: connectToPeer,
@@ -7,6 +7,8 @@ angular.module('starter.services', [])
       saveUserOnFirebase: saveUserOnFirebase,
       newServerConnection: newServerConnection,
       endGame: endGame,
+      setStatus: setStatus,
+      getStatus: getStatus
     };
     var connection;
     var peer;
@@ -25,7 +27,10 @@ angular.module('starter.services', [])
       peer.on('error', function(error) {
         $ionicLoading.hide();
         console.log("initialiseNewConnection error", error.type);
-        $ionicPopup.alert({title:'Could not connect',template:error.type})
+        $ionicPopup.alert({
+          title: 'Could not connect',
+          template: error.type
+        })
         def.reject(error);
       })
       peer.on('connection', function(conn) {
@@ -34,8 +39,7 @@ angular.module('starter.services', [])
       return def.promise;
     }
 
-    function initialiseNewConnection(username) {
-    }
+    function initialiseNewConnection(username) {}
 
     function connectToPeer(user) {
       var conn = peer.connect(user.peerId);
@@ -46,19 +50,30 @@ angular.module('starter.services', [])
       console.log("connection", conn);
       connectionMadeSuccess(conn);
       // connection = conn;
-      $ionicPopup.confirm({
-        title: 'New Invite',
-        template: 'Accept the invite'
-      }).then(function(res) {
-        if (res) {
-          sendMessage('invitationResponse',"accept");
-          $state.go('dashboard.game')
-          console.log("Connection established");
-        } else {
-          sendMessage('invitationResponse',"decline");
-          console.log("You refused");
-        }
-      })
+      if (getStatus() === 'busy') {
+        sendMessage('invitationResponse', "busy");
+      } else {
+        setStatus('busy')
+        var mypopup = $ionicPopup.confirm({
+          title: 'New Invite',
+          template: 'Accept the invite'
+        })
+        autoCancelTimeout = $timeout(function() {
+          mypopup.close();
+        }, 5000)
+        mypopup.then(function(res) {
+          $timeout.cancel(autoCancelTimeout);
+          if (res) {
+            sendMessage('invitationResponse', "accept");
+            $state.go('dashboard.game');
+            console.log("Connection established");
+          } else {
+            setStatus('available');
+            sendMessage('invitationResponse', "decline");
+            console.log("You refused 1");
+          }
+        })
+      }
     }
 
     function connectionMadeSuccess(conn) {
@@ -68,21 +83,44 @@ angular.module('starter.services', [])
         console.log("Connection done");
         connection.on('data', function(message) {
           console.log('Received', message);
-          if (message.type == 'invitationResponse' && message.message == 'accept') {
-            console.log("Peer accepted the invite");
-            $state.go('dashboard.game');
-          }else{
-            // window.setPlayer(message)
+          if (message.type == 'invitationResponse') {
+            if (message.message == 'accept') {
+              console.log("Peer accepted the invite");
+              $state.go('dashboard.game');
+            } else {
+              $ionicLoading.hide();
+              $ionicPopup.alert({
+                title: 'Refused',
+                template: 'Client refused to connect'
+              }).then(function(){
+              setStatus('available')
+              })
+            }
+          } else if (message.type == 'endGame') {
+            endGame();
           }
         });
       });
     }
 
-    function sendMessage(type,message) {
+    function sendMessage(type, message) {
       if (connection) {
-        console.log("sendMessage", connection, type,message);
-        connection.send({type:type,message:message});
+        console.log("sendMessage", connection, type, message);
+        connection.send({
+          type: type,
+          message: message
+        });
       }
+    }
+
+    function setStatus(status) {
+      localStorage.status = status;
+      console.log("setstatus", status, $rootScope.uuid)
+      firebase.database().ref('users/' + $rootScope.uuid + '/status').set(status);
+    }
+
+    function getStatus() {
+      return localStorage.status;
     }
 
     function saveUserOnFirebase() {
@@ -90,10 +128,14 @@ angular.module('starter.services', [])
         peerId: $rootScope.peerId,
         deviceId: $rootScope.uuid,
         username: localStorage.username,
+        status: getStatus()
       });
     }
-    function endGame(){
-      sendMessage('endGame')
+
+    function endGame() {
+      window.destroyGame();
+      sendMessage('endGame', 'endGame')
+      setStatus('available')
       $state.go('dashboard.connection');
     }
     return methods;

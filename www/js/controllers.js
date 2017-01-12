@@ -2,6 +2,7 @@ angular.module('starter.controllers', [])
   .controller('DashCtrl', function($scope, $rootScope, Connection, $ionicSlideBoxDelegate, $ionicLoading, $timeout, $ionicPlatform, $state) {
     $scope.connection = Connection;
     $scope.peerId;
+    $scope.localStorageObject = localStorage
     $scope.usernames = [
       'nigeriancomputer',
       'panamanianspecific',
@@ -39,10 +40,11 @@ angular.module('starter.controllers', [])
       }).then(function() {
         localStorage.username = $scope.username;
         $state.go('dashboard.connection');
+        localStorage.setStatus('available');
       });
     };
     var userDataRef = firebase.database().ref('users/');
-    $ionicLoading.show();
+    // $ionicLoading.show();
     userDataRef.on('value', function(snapshot) {
       $scope.users = snapshot.val();
       $timeout(function() {
@@ -51,7 +53,9 @@ angular.module('starter.controllers', [])
       });
     });
     $scope.invite = function(user) {
-      $ionicLoading.show({hideOnStateChange:true});
+      console.log("Invite")
+      Connection.setStatus('busy')
+      $ionicLoading.show();
       Connection.connectToPeer(user)
     };
   });
