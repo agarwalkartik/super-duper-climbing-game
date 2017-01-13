@@ -44,7 +44,7 @@ angular.module('starter.controllers', [])
       });
     };
     var userDataRef = firebase.database().ref('users/');
-    // $ionicLoading.show();
+    $ionicLoading.show();
     userDataRef.on('value', function(snapshot) {
       $scope.users = snapshot.val();
       $timeout(function() {

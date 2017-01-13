@@ -65,6 +65,7 @@ angular.module('starter.services', [])
           $timeout.cancel(autoCancelTimeout);
           if (res) {
             sendMessage('invitationResponse', "accept");
+            localStorage.role = 'slave';
             $state.go('dashboard.game');
             console.log("Connection established");
           } else {
@@ -82,9 +83,10 @@ angular.module('starter.services', [])
         // Receive messages
         console.log("Connection done");
         connection.on('data', function(message) {
-          console.log('Received', message);
+          // console.log('Received', message);
           if (message.type == 'invitationResponse') {
             if (message.message == 'accept') {
+            localStorage.role = 'master';
               console.log("Peer accepted the invite");
               $state.go('dashboard.game');
             } else {
@@ -98,14 +100,17 @@ angular.module('starter.services', [])
             }
           } else if (message.type == 'endGame') {
             endGame();
-          }
+          }else if(message.type === 'position'){
+            // console.log("RECEived position",message.message.x,message.message.y);
+            window.setPlayer(message.message);
+          } 
         });
       });
     }
 
     function sendMessage(type, message) {
       if (connection) {
-        console.log("sendMessage", connection, type, message);
+        // console.log("sendMessage", connection, type, message);
         connection.send({
           type: type,
           message: message
@@ -115,7 +120,7 @@ angular.module('starter.services', [])
 
     function setStatus(status) {
       localStorage.status = status;
-      console.log("setstatus", status, $rootScope.uuid)
+      // console.log("setstatus", status, $rootScope.uuid)
       firebase.database().ref('users/' + $rootScope.uuid + '/status').set(status);
     }
 
