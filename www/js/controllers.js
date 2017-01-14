@@ -40,7 +40,7 @@ angular.module('starter.controllers', [])
       }).then(function() {
         localStorage.username = $scope.username;
         $state.go('dashboard.connection');
-        localStorage.setStatus('available');
+        Connection.setStatus('available');
       });
     };
     var userDataRef = firebase.database().ref('users/');

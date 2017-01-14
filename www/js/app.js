@@ -7,18 +7,20 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', 'starter.directives'])
   .run(function($ionicPlatform, $rootScope, Connection, $ionicLoading, $state, $timeout) {
     $ionicPlatform.ready(function() {
-      // $ionicLoading.show({
-      //   hideOnStateChange: true
-      // });
+      localStorage.handshake = 'false';
+      localStorage.ready = 'false';
+      $ionicLoading.show({
+        hideOnStateChange: true
+      });
       $rootScope.uuid = ionic.Platform.device().uuid + 1 || 'chrometest';
       Connection.setStatus('busy');
       localStorage.uuid = $rootScope.uuid;
       Connection.newServerConnection().then(function() {
         if (!localStorage.username) {
-          // $state.go('dashboard.profile');
+          $state.go('dashboard.profile');
         } else {
           Connection.saveUserOnFirebase().then(function() {
-            // $state.go('dashboard.connection');
+            $state.go('dashboard.connection');
             Connection.setStatus('available');
           });
         }
@@ -83,5 +85,5 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
       });
     // if none of the above states are matched, use this as the fallback
-    $urlRouterProvider.otherwise('/dashboard/connection');
+    $urlRouterProvider.otherwise('/dashboard/profile');
   });

@@ -86,24 +86,39 @@ angular.module('starter.services', [])
           // console.log('Received', message);
           if (message.type == 'invitationResponse') {
             if (message.message == 'accept') {
-            localStorage.role = 'master';
-              console.log("Peer accepted the invite");
+              localStorage.role = 'master';
               $state.go('dashboard.game');
             } else {
               $ionicLoading.hide();
               $ionicPopup.alert({
                 title: 'Refused',
                 template: 'Client refused to connect'
-              }).then(function(){
-              setStatus('available')
+              }).then(function() {
+                setStatus('available')
               })
             }
           } else if (message.type == 'endGame') {
             endGame();
-          }else if(message.type === 'position'){
+          } else if (message.type === 'position') {
             // console.log("RECEived position",message.message.x,message.message.y);
-            window.setPlayer(message.message);
-          } 
+            // window.setPlayer(message.message);
+            window.opponentPosition = message.message
+          } else if (message.type === 'platformAdd') {
+            window.addPlatformForSlave(message.message)
+          } else if (message.type === 'platformSpeed') {
+            window.changeSpeedForSlave(message.message)
+          } else if (message.type === 'platformsArray') {
+            window.plotPlatformsForSlave(message.message)
+          } else if (message.type === 'ready') {
+            console.log("other user is ready, i am ready ==  ",window.ready)
+            window.otherUserReady = true;
+            if(window.ready === 'true'){
+              sendMessage('handshake','true');
+            }
+          }else if(message.type === 'handshake'){
+            console.log("handshake received")
+              window.handshake = 'true';
+          }
         });
       });
     }
