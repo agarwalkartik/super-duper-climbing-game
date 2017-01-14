@@ -9,18 +9,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     $ionicPlatform.ready(function() {
       localStorage.handshake = 'false';
       localStorage.ready = 'false';
-      $ionicLoading.show({
-        hideOnStateChange: true
-      });
+      // $ionicLoading.show({
+      //   hideOnStateChange: true
+      // });
       $rootScope.uuid = ionic.Platform.device().uuid + 1 || 'chrometest';
       Connection.setStatus('busy');
       localStorage.uuid = $rootScope.uuid;
       Connection.newServerConnection().then(function() {
         if (!localStorage.username) {
-          $state.go('dashboard.profile');
+          // $state.go('dashboard.profile');
         } else {
           Connection.saveUserOnFirebase().then(function() {
-            $state.go('dashboard.connection');
+            // $state.go('dashboard.connection');
             Connection.setStatus('available');
           });
         }
